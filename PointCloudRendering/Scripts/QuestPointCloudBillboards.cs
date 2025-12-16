@@ -21,7 +21,10 @@ public class QuestPointCloudBillboards : MonoBehaviour
     public float DistToNone = 20.0f;
 
     public bool autoCreateTestPoint = true;
+
+    [HideInInspector] // Hide in inspector due to lag loading this when inspecting object to change point size etc.
     public Vector3[] positions;
+    [HideInInspector]
     public Color32[] colors;
 
     ComputeBuffer _posBuffer;

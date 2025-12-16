@@ -35,11 +35,7 @@ public class LoadPlyToBillboards : MonoBehaviour
 
         try
         {
-            PlyAsciiLoader.Load(absolutePath, out var pos, out var col, maxPoints, stride);
-
-            // Apply scale/offset
-            for (int i = 0; i < pos.Length; i++)
-                pos[i] = pos[i] * scale + offset;
+            getPosCol(absolutePath, out var pos, out var col, maxPoints, stride);
 
             rendererComponent.positions = pos;
             rendererComponent.colors = col;
@@ -57,6 +53,25 @@ public class LoadPlyToBillboards : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets the positions and colors from an input point cloud
+    /// </summary>
+    /// <returns></returns>
+    void getPosCol(string path, out Vector3[] positions, out Color32[] colors, int maxPoints = 0, int stride = 1){
+
+        PlyAsciiLoader.Load(absolutePath, out var pos, out var col, maxPoints, stride);
+
+        // Place points relative to parent transform
+        Vector3 ParentPos = transform.parent.position;
+
+        // Apply scale/offset
+        for (int i = 0; i < pos.Length; i++)
+            pos[i] = pos[i] * scale + ParentPos + offset;
+
+        positions = pos;
+        colors = col;
+    }
+
+    /// <summary>
     /// Button to apply any changes to scripts
     /// </summary>
     public bool Apply; //"run" or "generate" for example
@@ -71,11 +86,7 @@ public class LoadPlyToBillboards : MonoBehaviour
     void ApplyButton()
     {
 
-        PlyAsciiLoader.Load(absolutePath, out var pos, out var col, maxPoints, stride);
-
-        // Apply scale/offset
-        for (int i = 0; i < pos.Length; i++)
-            pos[i] = pos[i] * scale + offset;
+        getPosCol(absolutePath, out var pos, out var col, maxPoints, stride);
 
         rendererComponent.positions = pos;
         rendererComponent.colors = col;
